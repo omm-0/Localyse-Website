@@ -1,13 +1,1620 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Localyse - India's Hyper-Local Influencer Platform</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localyse — Connect Creators with Local Businesses</title>
+    <meta name="description" content="Localyse is a hyper-local influencer marketplace that helps businesses discover creators in their city and launch authentic marketing campaigns.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@600;700;800&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           SECTION 1 & 2 — GLOBAL SETUP & COLOR SYSTEM
+           ========================================================================== */
+        :root {
+            /* Primary Palette */
+            --purple-500: #6366F1;
+            --purple-600: #4F46E5;
+            --purple-400: #818CF8;
+            --purple-300: #A5B4FC;
+            --purple-100: #EEF2FF;
+            --purple-glow: rgba(99, 102, 241, 0.4);
+            
+            /* Accent Colors */
+            --pink-500: #EC4899;
+            --amber-400: #FBBF24;
+            --emerald-400: #34D399;
+            --cyan-400: #22D3EE;
+            --orange-400: #FB923C;
+
+            /* Neutral Palette */
+            --gray-900: #0F172A;
+            --gray-800: #1E293B;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748B;
+            --gray-400: #94A3B8;
+            --gray-300: #CBD5E1;
+            --gray-200: #E2E8F0;
+            --gray-100: #F1F5F9;
+            --gray-50: #F8FAFC;
+            --white: #FFFFFF;
+            --bg-page: #FAFBFF; /* Very subtle purple/blue tint */
+
+            /* Special Effects */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-bg-light: rgba(255, 255, 255, 0.65);
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.1);
+            --glow-purple: 0 0 40px rgba(99, 102, 241, 0.3);
+            --glow-pink: 0 0 40px rgba(236, 72, 153, 0.25);
+
+            /* Typography */
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Sora', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* CSS Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-page);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ul, ol { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+
+        h1, h2 { font-family: var(--font-serif); }
+        h3, h4, h5, h6 { font-family: var(--font-sans); }
+
+        ::selection {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: var(--purple-600);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--gray-100); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--purple-500), var(--purple-600)); border-radius: 4px; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        section, footer { position: relative; overflow: hidden; }
+
+        /* ==========================================================================
+           SECTION 4 — GENERAL UI ANIMATIONS
+           ========================================================================== */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-25px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.3); }
+            50% { box-shadow: 0 0 40px rgba(99,102,241,0.5); }
+        }
+        @keyframes gradient-rotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+            75% { transform: rotate(-1deg); }
+        }
+
+        .animate-glow { animation: pulse-glow 3s ease-in-out infinite; }
+        .animate-bounce { animation: bounce-subtle 2s ease infinite; }
+        .animate-wiggle:hover { animation: wiggle 0.5s ease; display: inline-block; }
+
+        /* Scroll Reveal System */
+        .reveal {
+            opacity: 0; transform: translateY(35px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* ==========================================================================
+           BACKGROUND ENHANCEMENT SYSTEM (PARTICLES, ORBS, STREAKS)
+           ========================================================================== */
+        .bg-elements { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .content-z { position: relative; z-index: 1; }
+        .fl-el { position: absolute; will-change: transform, opacity; pointer-events: none; }
+        .parallax-wrapper { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; transition: transform 0.3s ease-out; }
+        
+        /* Floating Keyframes (Hardware Accelerated) */
+        @keyframes float-slow-1 {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            25% { transform: translate3d(15px, -20px, 0); }
+            50% { transform: translate3d(-10px, -35px, 0); }
+            75% { transform: translate3d(20px, -15px, 0); }
+        }
+        @keyframes float-slow-2 {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            33% { transform: translate3d(-20px, 15px, 0); }
+            66% { transform: translate3d(15px, -25px, 0); }
+        }
+        @keyframes float-slow-3 {
+            0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+            50% { transform: translate3d(25px, -30px, 0) rotate(180deg); }
+            100% { transform: translate3d(0, 0, 0) rotate(360deg); }
+        }
+        @keyframes float-vertical {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -40px, 0); }
+        }
+        @keyframes float-diagonal {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(30px, -30px, 0); }
+        }
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: var(--min-opacity, 0.05); }
+            50% { opacity: var(--max-opacity, 0.15); }
+        }
+        @keyframes scale-breathe {
+            0%, 100% { transform: scale(1) translate3d(0,0,0); }
+            50% { transform: scale(1.15) translate3d(0,0,0); }
+        }
+        @keyframes rotate-slow {
+            0% { transform: rotate(0deg) translate3d(0,0,0); }
+            100% { transform: rotate(360deg) translate3d(0,0,0); }
+        }
+
+        /* Reusable BG Types */
+        .bg-dot-grid { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(99,102,241,0.03) 1px, transparent 1px); background-size: 36px 36px; }
+        .bg-dot-grid-light { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 30px 30px; }
+        
+        .bg-orb { border-radius: 50%; }
+        .bg-shape-ring { border: 1.5px solid var(--purple-500); border-radius: 50%; opacity: 0.06; }
+        .bg-shape-ring-light { border: 1.5px solid var(--white); border-radius: 50%; opacity: 0.06; }
+        .bg-shape-square { border-radius: 6px; background: var(--purple-500); opacity: 0.05; }
+        .bg-shape-square-light { border-radius: 6px; background: var(--white); opacity: 0.05; }
+        .bg-shape-square-outline { border-radius: 10px; border: 1.5px solid var(--purple-500); opacity: 0.06; }
+        .bg-shape-square-outline-light { border-radius: 10px; border: 1.5px solid var(--white); opacity: 0.1; }
+        .bg-shape-circle { border-radius: 50%; background: var(--purple-500); opacity: 0.05; }
+        .bg-shape-circle-light { border-radius: 50%; background: var(--white); opacity: 0.08; }
+        
+        .bg-shape-plus { position: relative; opacity: 0.06; width: 14px; height: 14px; }
+        .bg-shape-plus::before, .bg-shape-plus::after { content: ''; position: absolute; background: var(--purple-500); }
+        .bg-shape-plus::before { top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); }
+        .bg-shape-plus::after { left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); }
+        
+        .bg-shape-plus-light { position: relative; opacity: 0.1; width: 14px; height: 14px; }
+        .bg-shape-plus-light::before, .bg-shape-plus-light::after { content: ''; position: absolute; background: var(--white); }
+        .bg-shape-plus-light::before { top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%); }
+        .bg-shape-plus-light::after { left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); }
+
+        .bg-streak { opacity: 0.3; filter: blur(1px); }
+        .bg-particle { border-radius: 50%; opacity: 0.1; }
+
+        /* ==========================================================================
+           SECTION 5 — COMPONENT STYLES
+           ========================================================================== */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); color: var(--white); font-family: var(--font-sans); font-size: 15px; font-weight: 600; padding: 14px 30px; border-radius: 14px; border: none; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary::before {
+            content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.6s ease;
+        }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 35px rgba(99, 102, 241, 0.45); }
+        .btn-primary:hover::before { left: 100%; }
+
+        .btn-outline {
+            background: transparent; color: var(--purple-500); font-family: var(--font-sans); font-size: 15px; font-weight: 600; padding: 14px 30px; border-radius: 14px; border: 2px solid rgba(99, 102, 241, 0.25); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease;
+        }
+        .btn-outline:hover { background: rgba(99, 102, 241, 0.06); border-color: var(--purple-500); transform: translateY(-2px); }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.1); color: var(--white); font-family: var(--font-sans); font-size: 15px; font-weight: 600; padding: 14px 30px; border-radius: 14px; border: 1.5px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease;
+        }
+        .btn-ghost:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.4); transform: translateY(-2px); }
+
+        .badge-pill {
+            display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 100px; background: rgba(99, 102, 241, 0.08); color: var(--purple-500);
+        }
+
+        /* ==========================================================================
+           SECTION 6 — NAVIGATION BAR
+           ========================================================================== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: 72px; background: transparent; transition: all 0.4s ease;
+        }
+        .navbar.scrolled {
+            background: rgba(250, 251, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 20px rgba(0, 0, 0, 0.04); border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-logo-icon {
+            width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); transition: all 0.3s ease;
+        }
+        .nav-logo:hover .nav-logo-icon { transform: rotate(-6deg) scale(1.06); }
+        .nav-brand { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--white); transition: color 0.3s ease; }
+        .navbar.scrolled .nav-brand { color: var(--gray-900); }
+
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { font-family: var(--font-body); font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.8); position: relative; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--white); }
+        .navbar.scrolled .nav-links a { color: var(--gray-500); }
+        .navbar.scrolled .nav-links a:hover { color: var(--purple-500); }
+        .navbar.scrolled .nav-links a.active { color: var(--purple-500); }
+        .nav-links a::after {
+            content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--white); position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%) scale(0); opacity: 0; transition: all 0.3s ease;
+        }
+        .navbar.scrolled .nav-links a::after { background: var(--purple-500); }
+        .nav-links a.active::after, .nav-links a:hover::after { opacity: 1; transform: translateX(-50%) scale(1); }
+
+        .nav-actions { display: flex; align-items: center; gap: 12px; }
+        .nav-login { font-family: var(--font-body); font-size: 14px; font-weight: 500; background: transparent; border: none; padding: 8px 18px; border-radius: 10px; color: rgba(255, 255, 255, 0.8); cursor: pointer; transition: all 0.3s ease; }
+        .nav-login:hover { color: var(--white); background: rgba(255, 255, 255, 0.1); }
+        .navbar.scrolled .nav-login { color: var(--gray-500); }
+        .navbar.scrolled .nav-login:hover { color: var(--purple-500); background: rgba(99, 102, 241, 0.05); }
+        .nav-signup { font-family: var(--font-sans); font-size: 13px; font-weight: 600; padding: 9px 20px; border-radius: 10px; border: none; cursor: pointer; background: var(--white); color: var(--purple-500); box-shadow: 0 2px 12px rgba(0,0,0,0.1); transition: all 0.3s ease; }
+        .navbar.scrolled .nav-signup { background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); color: var(--white); box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+        .nav-signup:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.4); }
+
+        .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 1001; padding: 8px; }
+        .hamburger span { width: 24px; height: 2px; background: var(--white); transition: 0.3s ease; border-radius: 2px; }
+        .navbar.scrolled .hamburger span { background: var(--gray-900); }
+        .hamburger.active span { background: var(--gray-900); }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .mobile-menu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(250,251,255,0.98); backdrop-filter: blur(20px); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; opacity: 0; pointer-events: none; transition: all 0.4s ease; transform: translateX(100%);
+        }
+        .mobile-menu.open { opacity: 1; pointer-events: all; transform: translateX(0); }
+        .mobile-menu a { font-family: var(--font-serif); font-size: 28px; font-weight: 600; color: var(--gray-900); }
+
+        /* ==========================================================================
+           SECTION 7 — HERO SECTION
+           ========================================================================== */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; padding-top: 72px; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, #1E1147 0%, #2D1B69 25%, #4F46E5 50%, #6366F1 75%, #818CF8 100%);
+            background-size: 200% 200%; animation: gradient-rotate 12s ease infinite;
+        }
+
+        .hero-container { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .hero-left { animation: fadeInLeft 0.8s ease-out forwards; }
+        
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); padding: 8px 20px; border-radius: 100px;
+            font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 32px;
+        }
+        .hero-h1 { font-family: var(--font-serif); font-size: 60px; font-weight: 800; color: var(--white); line-height: 1.06; letter-spacing: -1.5px; margin-bottom: 24px; text-shadow: 0 2px 30px rgba(0,0,0,0.2); }
+        .text-gradient-shimmer { background: linear-gradient(135deg, #A5B4FC, #C4B5FD, #F0ABFC); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: none; }
+        .hero-sub { font-family: var(--font-body); font-size: 18px; font-weight: 400; color: rgba(255, 255, 255, 0.7); line-height: 1.75; max-width: 480px; margin-bottom: 40px; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+        .btn-hero-primary {
+            background: var(--white); color: var(--purple-600); font-family: var(--font-sans); font-size: 16px; font-weight: 700; padding: 16px 34px; border-radius: 14px; border: none; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); display: inline-flex; align-items: center; gap: 10px; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative; overflow: hidden;
+        }
+        .btn-hero-primary::after { content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); transition: left 0.6s ease; }
+        .btn-hero-primary:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 16px 45px rgba(0, 0, 0, 0.25); }
+        .btn-hero-primary:hover::after { left: 100%; }
+
+        .social-proof { display: flex; align-items: center; gap: 16px; margin-top: 48px; }
+        .avatar-stack { display: flex; }
+        .av-circle { width: 38px; height: 38px; border-radius: 50%; border: 3px solid rgba(79, 70, 229, 0.6); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--white); }
+        .av-circle:not(:first-child) { margin-left: -10px; }
+        .av-1 { background: linear-gradient(135deg, #F472B6, #EC4899); }
+        .av-2 { background: linear-gradient(135deg, #FBBF24, #F59E0B); }
+        .av-3 { background: linear-gradient(135deg, #34D399, #10B981); }
+        .av-4 { background: linear-gradient(135deg, #60A5FA, #3B82F6); }
+        .av-5 { background: linear-gradient(135deg, #A78BFA, #8B5CF6); }
+        .trust-text { font-size: 14px; color: rgba(255, 255, 255, 0.6); }
+        .trust-text span { font-weight: 700; color: var(--white); }
+
+        /* Hero Right Visual */
+        .hero-right { position: relative; min-height: 500px; opacity: 0; animation: fadeInRight 0.8s ease-out 0.3s forwards; }
+        .dash-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 24px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15); width: 100%; max-width: 380px; margin: 0 auto; position: relative; z-index: 2; }
+        .dash-top { display: flex; align-items: center; margin-bottom: 24px; }
+        .dots { display: flex; gap: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; opacity: 0.7; }
+        .dot-r { background: #FF5F56; } .dot-y { background: #FFBD2E; } .dot-g { background: #27C93F; }
+        .dash-search { flex: 1; margin-left: 16px; height: 36px; background: rgba(255, 255, 255, 0.08); border-radius: 10px; display: flex; align-items: center; padding-left: 14px; gap: 8px; }
+        .dash-search span { font-size: 12px; color: rgba(255,255,255,0.4); font-family: var(--font-body); }
+
+        .mini-cards { display: flex; flex-direction: column; gap: 12px; }
+        .mini-card { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.3s ease; opacity: 0; }
+        .mini-card:hover { transform: translateX(6px); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .mc-anim-1 { animation: slideInRight 0.5s ease 0.6s forwards; }
+        .mc-anim-2 { animation: slideInRight 0.5s ease 0.8s forwards; }
+        .mc-anim-3 { animation: slideInRight 0.5s ease 1.0s forwards; }
+
+        .mc-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .mci-1 { background: #FEF3C7; color: #D97706; }
+        .mci-2 { background: #D1FAE5; color: #059669; }
+        .mci-3 { background: #FCE7F3; color: #DB2777; }
+
+        .mc-text { flex: 1; min-width: 0; }
+        .mc-title { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--gray-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mc-sub { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+        .mc-pill { font-family: var(--font-sans); font-size: 12px; font-weight: 700; color: var(--purple-500); background: var(--purple-100); padding: 5px 12px; border-radius: 8px; }
+
+        .float-card { position: absolute; background: var(--white); border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); z-index: 3; }
+        .fc-tr { top: -20px; right: -30px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+        .fc-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #F472B6, #EC4899); display: flex; align-items: center; justify-content: center; color: white; font-family: var(--font-sans); font-weight: 700; font-size: 14px; position: relative; }
+        .fc-dot { position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #34D399; border: 2px solid white; }
+        .fc-name { font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--gray-900); }
+        .fc-label { font-size: 11px; color: var(--gray-400); }
+
+        .fc-bl { bottom: -16px; left: -24px; padding: 16px 20px; }
+        .fc-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; color: var(--gray-400); letter-spacing: 0.5px; }
+        .fc-icon-bg { width: 28px; height: 28px; border-radius: 50%; background: var(--purple-100); color: var(--purple-500); display: flex; align-items: center; justify-content: center; }
+        .fc-big { font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: var(--gray-900); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        
+        .fc-tl { top: 20%; left: -10px; padding: 10px 16px; border-radius: 100px; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); animation-delay: 2s; }
+        .fc-check { width: 24px; height: 24px; border-radius: 50%; background: #D1FAE5; color: #059669; display: flex; align-items: center; justify-content: center; }
+        .fc-tl-text { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--gray-900); }
+
+        .hero-bottom-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 150px; background: linear-gradient(to top, var(--bg-page) 0%, transparent 100%); z-index: 1; pointer-events: none; }
+
+        /* ==========================================================================
+           SECTION 8 — TRUST STRIP
+           ========================================================================== */
+        .trust-strip { background: var(--white); border-bottom: 1px solid var(--gray-100); padding: 28px 0; }
+        .trust-flex { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; align-items: center; }
+        .stat-item { display: flex; align-items: center; gap: 12px; }
+        .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .si-1 { background: var(--purple-100); color: var(--purple-500); }
+        .si-2 { background: #FEF3C7; color: #D97706; }
+        .si-3 { background: #D1FAE5; color: #059669; }
+        .si-4 { background: #FCE7F3; color: #EC4899; }
+        .stat-num { font-family: var(--font-serif); font-size: 28px; font-weight: 700; color: var(--gray-900); line-height: 1.1; }
+        .stat-label { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+        .text-amber { color: #FBBF24; }
+
+        /* ==========================================================================
+           SECTION 9 — DISCOVER CAMPAIGNS
+           ========================================================================== */
+        .section-padding { padding: 96px 0; }
+        .bg-gradient-subtle { background: linear-gradient(180deg, #F8FAFC 0%, var(--bg-page) 100%); }
+        
+        .sec-header { text-align: center; margin-bottom: 56px; }
+        .sec-badge { margin-bottom: 16px; background: rgba(236,72,153,0.08); color: var(--pink-500); }
+        .sec-h2 { font-size: 42px; font-weight: 700; color: var(--gray-900); line-height: 1.15; letter-spacing: -0.5px; }
+        .sec-line { width: 60px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--purple-500), var(--pink-500)); margin: 20px auto 16px; }
+        .sec-sub { font-size: 17px; color: var(--gray-500); max-width: 520px; margin: 0 auto; }
+
+        .camp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .camp-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--card-shadow); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
+        .camp-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-color: rgba(99,102,241,0.12); }
+        
+        .camp-img { height: 200px; position: relative; overflow: hidden; }
+        .camp-grad { position: absolute; top:0; left:0; width:100%; height:100%; transition: transform 0.6s ease; display: flex; align-items: center; justify-content: center; }
+        .camp-card:hover .camp-grad { transform: scale(1.08); }
+        .cg-1 { background: linear-gradient(135deg, #FBBF24 0%, #F97316 100%); }
+        .cg-2 { background: linear-gradient(135deg, #34D399 0%, #06B6D4 100%); }
+        .cg-3 { background: linear-gradient(135deg, #F472B6 0%, #A855F7 100%); }
+        .cg-4 { background: linear-gradient(135deg, #EF4444 0%, #F97316 100%); }
+        
+        .camp-wm { opacity: 0.15; color: white; width: 80px; height: 80px; }
+        .camp-tag-cat { position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); color: white; font-family: var(--font-sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 5px 14px; border-radius: 100px; }
+        .camp-tag-trend { position: absolute; top: 16px; right: 16px; background: linear-gradient(135deg, var(--pink-500), #F43F5E); color: white; font-family: var(--font-sans); font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+
+        .camp-content { padding: 22px; }
+        .camp-title { font-family: var(--font-sans); font-size: 17px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; line-height: 1.4; transition: color 0.3s; }
+        .camp-card:hover .camp-title { color: var(--purple-500); }
+        .camp-loc { display: flex; align-items: center; gap: 5px; margin-bottom: 16px; font-size: 13px; color: var(--gray-400); }
+        .camp-bot { display: flex; align-items: center; justify-content: space-between; }
+        .camp-price { font-family: var(--font-sans); font-size: 20px; font-weight: 700; color: var(--purple-500); }
+        .camp-apply { font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--gray-400); transition: all 0.3s; display: flex; align-items: center; gap: 4px; }
+        .camp-card:hover .camp-apply { color: var(--purple-500); }
+        .camp-card:hover .camp-apply span { transform: translateX(4px); display: inline-block; transition: transform 0.3s; }
+
+        /* ==========================================================================
+           SECTION 10 — BENTO FEATURES
+           ========================================================================== */
+        .bg-white { background: var(--white); }
+        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: auto; gap: 20px; }
+        .bento-card { border-radius: 24px; padding: 32px; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+        .bento-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+        
+        .bc-span-2 { grid-column: span 2; min-height: 260px; }
+        
+        .bc-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; transition: all 0.3s; z-index: 2; position: relative; }
+        .bc-title { font-family: var(--font-sans); font-size: 18px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; z-index: 2; position: relative; }
+        .bc-desc { font-size: 14px; color: var(--gray-500); line-height: 1.7; z-index: 2; position: relative; }
+        .bc-deco { position: absolute; bottom: -10px; right: -10px; opacity: 0.04; width: 120px; height: 120px; color: inherit; z-index: 1; transition: all 0.5s; }
+        .bento-card:hover .bc-deco { transform: scale(1.1) rotate(-5deg); opacity: 0.08; }
+
+        /* Card specific styles */
+        .bc-1 { background: var(--purple-100); }
+        .bc-1 .bc-icon { background: white; color: var(--purple-500); }
+        .bento-card:hover.bc-1 .bc-icon { background: var(--purple-500); color: white; }
+        
+        .bc-border { background: white; border: 1px solid var(--gray-200); }
+        .bc-border .bc-icon { background: var(--gray-100); color: var(--gray-700); }
+        
+        .bc-dark { background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); }
+        .bc-dark .bc-title { color: white; }
+        .bc-dark .bc-desc { color: rgba(255,255,255,0.7); }
+        .bc-dark .bc-icon { background: rgba(255,255,255,0.15); color: white; }
+        
+        .bc-amber { background: #FEF3C7; }
+        .bc-amber .bc-icon { background: white; color: #D97706; }
+        
+        .bc-green { background: #D1FAE5; }
+        .bc-green .bc-icon { background: white; color: #059669; }
+        
+        .bc-pink { background: #FCE7F3; }
+        .bc-pink .bc-icon { background: white; color: #EC4899; }
+
+        /* ==========================================================================
+           SECTION 11 — HOW IT WORKS
+           ========================================================================== */
+        .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+        .step-card { text-align: center; padding: 32px 20px; position: relative; }
+        .step-icon-area { position: relative; width: 72px; margin: 0 auto 28px; z-index: 2; }
+        .step-circle { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(99,102,241,0.3); color: white; }
+        .step-num { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; border-radius: 50%; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid var(--gray-100); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 12px; font-weight: 800; color: var(--purple-500); }
+        .step-connector::after { content: ""; position: absolute; top: 68px; left: 60%; width: 80%; height: 2px; background: linear-gradient(90deg, transparent, rgba(99,102,241,0.25), transparent); z-index: 1; }
+        .step-title { font-family: var(--font-sans); font-size: 19px; font-weight: 600; color: var(--gray-900); margin-bottom: 10px; }
+        .step-desc { font-size: 14px; color: var(--gray-500); line-height: 1.7; max-width: 220px; margin: 0 auto; }
+
+        /* ==========================================================================
+           SECTION 11.5 — PRICING
+           ========================================================================== */
+        .pricing-section { background: var(--bg-page); }
+        .pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 48px; font-family: var(--font-sans); font-size: 14px; font-weight: 600; }
+        
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-200); transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input:checked + .slider { background-color: var(--purple-500); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto; }
+        .price-card { background: white; border-radius: 24px; padding: 32px; border: 1px solid var(--gray-200); display: flex; flex-direction: column; transition: all 0.3s; }
+        .price-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+        .price-card.featured { border: 2px solid var(--purple-300); box-shadow: 0 10px 30px rgba(99,102,241,0.1); }
+        
+        .plan-name { font-family: var(--font-sans); font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 16px; }
+        .plan-price { font-family: var(--font-sans); display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+        .plan-price .amount { font-size: 32px; font-weight: 700; color: var(--gray-900); }
+        .plan-price .old-amount { font-size: 24px; font-weight: 700; color: var(--gray-400); text-decoration: line-through; }
+        .plan-price .free-text { font-size: 22px; font-weight: 700; color: var(--emerald-400); }
+        .plan-price .period { font-size: 14px; color: var(--gray-500); }
+        .plan-desc { font-size: 14px; color: var(--gray-500); margin-bottom: 24px; min-height: 44px; }
+        
+        .plan-features { list-style: none; margin-bottom: 32px; flex: 1; }
+        .plan-features li { display: flex; gap: 12px; font-size: 14px; color: var(--gray-700); margin-bottom: 16px; align-items: flex-start; }
+        .plan-features svg { width: 18px; height: 18px; color: var(--purple-400); flex-shrink: 0; margin-top: 2px; }
+        
+        .btn-price-primary { width: 100%; background: var(--purple-100); color: var(--gray-900); border: none; padding: 12px; border-radius: 12px; font-family: var(--font-sans); font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; }
+        .btn-price-primary:hover { background: var(--purple-300); }
+        .price-card.featured .btn-price-primary { background: var(--purple-100); }
+        .price-card.featured .btn-price-primary:hover { background: var(--purple-300); }
+
+        /* ==========================================================================
+           SECTION 12 — SUCCESS STORIES (FEEDBACK)
+           ========================================================================== */
+        .feedback-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .fb-card { background: white; border-radius: 20px; padding: 32px; border: 1px solid var(--gray-200); box-shadow: var(--card-shadow); transition: transform 0.3s; display: flex; flex-direction: column; }
+        .fb-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+        .fb-stars { display: flex; gap: 4px; margin-bottom: 20px; }
+        .fb-stars svg { width: 20px; height: 20px; fill: var(--purple-300); color: var(--purple-300); }
+        .fb-quote { font-size: 15px; color: var(--gray-700); line-height: 1.7; margin-bottom: 24px; flex: 1; }
+        .fb-author { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--gray-900); }
+        .fb-role { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
+
+        /* ==========================================================================
+           SECTION 13 — COMMUNITY GRID
+           ========================================================================== */
+        .community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 12px; max-width: 600px; margin: 0 auto; justify-items: center; }
+        .com-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: white; cursor: pointer; transition: all 0.3s ease; }
+        .com-avatar:hover { transform: scale(1.2); box-shadow: 0 8px 25px rgba(0,0,0,0.15); z-index: 2; }
+        .ca-lg { width: 60px; height: 60px; font-size: 18px; }
+        .ca-sm { width: 44px; height: 44px; font-size: 14px; }
+        
+        .cg-p { background: linear-gradient(135deg, #6366F1, #4F46E5); }
+        .cg-pi { background: linear-gradient(135deg, #EC4899, #F43F5E); }
+        .cg-a { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .cg-g { background: linear-gradient(135deg, #10B981, #059669); }
+        .cg-b { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+        .cg-v { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+        .cg-r { background: linear-gradient(135deg, #F472B6, #DB2777); }
+        .cg-c { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+
+        .btn-center { display: flex; justify-content: center; margin-top: 48px; }
+
+        /* ==========================================================================
+           SECTION 14 — FINAL CTA
+           ========================================================================== */
+        .final-cta { background: linear-gradient(135deg, #1E1147 0%, #2D1B69 30%, #4F46E5 70%, #6366F1 100%); padding: 100px 0; position: relative; overflow: hidden; text-align: center; }
+        .cta-top-fade { position: absolute; top: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to bottom, var(--bg-page) 0%, transparent 100%); z-index: 1; pointer-events: none; }
+        .emoji-row { font-size: 32px; letter-spacing: 12px; margin-bottom: 24px; }
+        .cta-h2 { font-size: 44px; font-weight: 700; color: white; margin-bottom: 16px; }
+        .cta-sub { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto 36px; }
+
+        /* ==========================================================================
+           SECTION 15 — FOOTER
+           ========================================================================== */
+        footer { background: var(--gray-900); padding: 64px 0 0; color: var(--gray-400); }
+        .footer-top-line { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), rgba(236,72,153,0.2), transparent); z-index: 1; pointer-events: none; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+        
+        .footer-desc { font-size: 14px; line-height: 1.8; max-width: 300px; margin-top: 16px; }
+        .socials { display: flex; gap: 10px; margin-top: 24px; }
+        .social-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--gray-800); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 11px; font-weight: 700; color: var(--gray-500); transition: all 0.3s; cursor: pointer; }
+        .social-btn:hover { background: var(--purple-500); color: white; transform: translateY(-3px); }
+        
+        .footer-h4 { font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+        .footer-links a { display: block; padding: 8px 0; font-size: 14px; transition: 0.3s; position: relative; }
+        .footer-links a::before { content: ""; width: 3px; height: 100%; background: var(--purple-500); position: absolute; left: -12px; top: 0; opacity: 0; transition: 0.3s; }
+        .footer-links a:hover { color: var(--purple-300); transform: translateX(4px); }
+        .footer-links a:hover::before { opacity: 1; }
+
+        .footer-bottom { margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--gray-800); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .footer-legal { display: flex; gap: 24px; }
+        .footer-legal a:hover { color: var(--gray-300); }
+
+        /* ==========================================================================
+           RESPONSIVE DESIGN & MOBILE HIDING
+           ========================================================================== */
+        @media (max-width: 1024px) {
+            .hero-container { grid-template-columns: 1fr; text-align: center; }
+            .hero-right { display: none; }
+            .hero-h1 { font-size: 44px; }
+            .hero-sub { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .social-proof { justify-content: center; }
+            
+            .camp-grid { grid-template-columns: repeat(2, 1fr); }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .bc-span-2 { grid-column: span 1; }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .step-connector::after { display: none; }
+            .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+            .feedback-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-actions { display: none; }
+            .hamburger { display: flex; }
+            
+            .camp-grid, .bento-grid, .steps-grid, .pricing-grid, .feedback-grid { grid-template-columns: 1fr; }
+            .hero-h1 { font-size: 36px; }
+            .sec-h2 { font-size: 34px; }
+            
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .section-padding { padding: 64px 0; }
+
+            /* Hide heavy floating elements on mobile */
+            .hide-on-mobile, .bg-streak, .bg-shape-ring, .bg-shape-ring-light, .bg-shape-plus, .bg-shape-plus-light { display: none !important; }
+            .bg-orb { filter: blur(40px) !important; } /* Reduce blur cost on mobile */
+            .hide-orb-mobile { display: none !important; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-h1 { font-size: 30px; }
+            .hero-buttons { flex-direction: column; width: 100%; }
+            .hero-buttons button { width: 100%; }
+            .trust-flex { gap: 24px; }
+            .stat-item { width: 45%; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .section-padding { padding: 48px 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#hero" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
+                    </svg>
+                </div>
+                <span class="nav-brand">Localyse</span>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="#hero" class="active">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#feedbacks">Stories</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-login">Log in</button>
+                <button class="nav-signup">Sign up</button>
+            </div>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#hero" class="mobile-link">Home</a>
+        <a href="#features" class="mobile-link">Features</a>
+        <a href="#pricing" class="mobile-link">Pricing</a>
+        <a href="#feedbacks" class="mobile-link">Stories</a>
+        <div style="display: flex; gap: 16px; margin-top: 24px;">
+            <button class="btn-outline mobile-link" style="color:var(--gray-900); border-color:var(--gray-300);">Log in</button>
+            <button class="btn-primary mobile-link">Sign up</button>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="hero">
+        <div class="hero-bottom-fade"></div>
+        <div class="bg-elements">
+            <!-- Dot Grid Layer -->
+            <div class="bg-dot-grid-light"></div>
+            <!-- Parallax Wrapper for Orbs -->
+            <div class="parallax-wrapper js-parallax" data-speed="0.01">
+                <div class="fl-el bg-orb" style="background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%); filter: blur(80px); animation: float-slow-1 20s infinite; width: 550px; height: 550px; top: -15%; right: -10%;"></div>
+            </div>
+            <div class="parallax-wrapper js-parallax" data-speed="0.015">
+                <div class="fl-el bg-orb" style="background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%); filter: blur(90px); animation: float-slow-2 25s infinite; width: 450px; height: 450px; bottom: -20%; left: -8%;"></div>
+            </div>
+            <div class="parallax-wrapper js-parallax" data-speed="0.02">
+                <div class="fl-el bg-orb hide-orb-mobile" style="background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%); filter: blur(70px); animation: float-slow-3 30s infinite ease-in-out; width: 500px; height: 500px; top: 35%; left: 25%;"></div>
+            </div>
+            <!-- Parallax Wrapper for Shapes -->
+            <div class="parallax-wrapper js-parallax" data-speed="0.03">
+                <div class="fl-el bg-shape-circle-light hide-on-mobile" style="width: 20px; height: 20px; top: 15%; left: 8%; animation: float-slow-1 15s infinite;"></div>
+                <div class="fl-el bg-shape-square-outline-light hide-on-mobile" style="width: 35px; height: 35px; top: 25%; right: 15%; animation: float-slow-2 18s infinite, rotate-slow 40s infinite; animation-delay: 2s;"></div>
+                <div class="fl-el bg-shape-circle" style="width: 14px; height: 14px; background: rgba(165,180,252,0.15); top: 60%; left: 5%; animation: float-vertical 12s infinite; animation-delay: 4s;"></div>
+                <div class="fl-el bg-shape-ring-light" style="width: 80px; height: 80px; bottom: 20%; right: 8%; animation: scale-breathe 12s infinite; animation-delay: 1s;"></div>
+                <div class="fl-el bg-shape-plus-light" style="top: 40%; left: 12%; animation: rotate-slow 50s infinite; animation-delay: 3s;"></div>
+                <div class="fl-el bg-shape-circle-light" style="width: 8px; height: 8px; box-shadow: 0 0 12px rgba(165,180,252,0.3); top: 70%; left: 18%; animation: pulse-opacity 4s infinite; --min-opacity: 0.05; --max-opacity: 0.15; animation-delay: 5s;"></div>
+                <div class="fl-el bg-shape-square-light" style="width: 24px; height: 24px; bottom: 30%; left: 40%; animation: float-diagonal 20s infinite; animation-delay: 7s;"></div>
+                <div class="fl-el bg-shape-circle" style="width: 10px; height: 10px; background: rgba(236,72,153,0.1); top: 20%; right: 25%; animation: float-slow-1 16s infinite; animation-delay: 6s;"></div>
+            </div>
+            <!-- Streaks -->
+            <div class="parallax-wrapper js-parallax" data-speed="0.04">
+                <div class="fl-el bg-streak" style="width: 2px; height: 150px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.06), transparent); top: 10%; left: 20%; transform: rotate(35deg); animation: float-vertical 20s infinite;"></div>
+                <div class="fl-el bg-streak" style="width: 1px; height: 200px; background: linear-gradient(to bottom, transparent, rgba(165,180,252,0.08), transparent); top: 30%; right: 30%; transform: rotate(-25deg); animation: float-slow-2 25s infinite;"></div>
+                <div class="fl-el bg-streak" style="width: 1.5px; height: 120px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.05), transparent); bottom: 25%; left: 45%; transform: rotate(50deg); animation: float-diagonal 22s infinite;"></div>
+            </div>
+        </div>
+
+        <div class="container hero-container content-z">
+            <!-- Left Text -->
+            <div class="hero-left">
+                <span class="hero-badge">
+                    ✨ The creator marketplace for your city
+                </span>
+                <h1 class="hero-h1">
+                    Connect with <br><span class="text-gradient-shimmer">Creators</span> in Your City
+                </h1>
+                <p class="hero-sub">
+                    Localyse helps local businesses discover authentic creators in their neighbourhood and launch marketing campaigns that actually drive footfall.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-hero-primary animate-glow">
+                        Get Started Free <span class="animate-wiggle">🚀</span>
+                    </button>
+                    <button class="btn-ghost">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                        See How It Works
+                    </button>
+                </div>
+
+                <div class="social-proof">
+                    <div class="avatar-stack">
+                        <div class="av-circle av-1">S</div>
+                        <div class="av-circle av-2">A</div>
+                        <div class="av-circle av-3">R</div>
+                        <div class="av-circle av-4">M</div>
+                        <div class="av-circle av-5">K</div>
+                    </div>
+                    <p class="trust-text">Joined by <span>2,000+</span> creators & businesses <span class="animate-wiggle">💜</span></p>
+                </div>
+            </div>
+
+            <!-- Right Visual -->
+            <div class="hero-right">
+                <div class="float-card fc-tl animate-float" style="animation-delay: 2s;">
+                    <div class="fc-check">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <span class="fc-tl-text">New match! 🎉</span>
+                </div>
+
+                <div class="float-card fc-tr animate-float">
+                    <div class="fc-avatar">P<div class="fc-dot"></div></div>
+                    <div>
+                        <div class="fc-name">Priya M.</div>
+                        <div class="fc-label">12.5K followers ⚡</div>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="dash-top">
+                        <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+                        <div class="dash-search">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <span>Search local campaigns...</span>
+                        </div>
+                    </div>
+                    <div class="mini-cards">
+                        <div class="mini-card mc-anim-1">
+                            <div class="mc-icon mci-1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg></div>
+                            <div class="mc-text">
+                                <div class="mc-title">Artisan Café Collab</div>
+                                <div class="mc-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Mumbai</div>
+                            </div>
+                            <div class="mc-pill">₹15K</div>
+                        </div>
+                        <div class="mini-card mc-anim-2">
+                            <div class="mc-icon mci-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+                            <div class="mc-text">
+                                <div class="mc-title">Fitness Studio Launch</div>
+                                <div class="mc-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Delhi</div>
+                            </div>
+                            <div class="mc-pill">₹25K</div>
+                        </div>
+                        <div class="mini-card mc-anim-3">
+                            <div class="mc-icon mci-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
+                            <div class="mc-text">
+                                <div class="mc-title">Salon Brand Shoot</div>
+                                <div class="mc-sub"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Bangalore</div>
+                            </div>
+                            <div class="mc-pill">₹20K</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="float-card fc-bl animate-float-reverse">
+                    <div class="fc-row">
+                        <div class="fc-icon-bg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                        Campaign ROI
+                    </div>
+                    <div class="fc-big">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                        248%
+                    </div>
+                    <div class="fc-label">avg. return on campaigns</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section class="trust-strip reveal">
+        <div class="bg-elements">
+            <div class="bg-dot-grid"></div>
+            <div class="fl-el bg-particle" style="width: 6px; height: 6px; background: rgba(99,102,241,0.08); top: 20%; left: 10%; animation: pulse-opacity 5s infinite; --min-opacity:0.02; --max-opacity:0.1;"></div>
+            <div class="fl-el bg-particle hide-on-mobile" style="width: 5px; height: 5px; background: rgba(165,180,252,0.1); bottom: 25%; right: 12%; animation: pulse-opacity 4s infinite 2s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+        </div>
+        <div class="container trust-flex content-z">
+            <div class="stat-item">
+                <div class="stat-icon si-1"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                <div>
+                    <div class="stat-num" data-val="2000" data-suf="+">0</div>
+                    <div class="stat-label">Active Creators</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon si-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"></path><path d="M10 22V6c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v16"></path><path d="M16 22V2c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v20"></path></svg></div>
+                <div>
+                    <div class="stat-num" data-val="800" data-suf="+">0</div>
+                    <div class="stat-label">Local Businesses</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon si-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                <div>
+                    <div class="stat-num" data-val="50" data-suf="+">0</div>
+                    <div class="stat-label">Cities Covered</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon si-4"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                <div>
+                    <div class="stat-num text-amber" data-val="4.9" data-suf="★">0</div>
+                    <div class="stat-label">Platform Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DISCOVER CAMPAIGNS -->
+    <section id="campaigns" class="section-padding bg-gradient-subtle">
+        <div class="bg-elements">
+            <div class="bg-dot-grid" style="background-image: radial-gradient(circle, rgba(99,102,241,0.025) 1px, transparent 1px); background-size: 40px 40px;"></div>
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.03" style="top: -100px; right: -100px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%); filter: blur(60px); animation: scale-breathe 15s infinite;"></div>
+            <div class="fl-el bg-orb hide-orb-mobile js-scroll-parallax" data-speed="-0.02" style="bottom: -80px; left: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(236,72,153,0.05) 0%, transparent 70%); filter: blur(70px); animation: scale-breathe 18s infinite 5s;"></div>
+            
+            <div class="fl-el bg-shape-ring hide-on-mobile" style="width: 120px; height: 120px; top: 10%; left: 5%; animation: rotate-slow 60s infinite;"></div>
+            <div class="fl-el bg-shape-square" style="width: 20px; height: 20px; top: 30%; right: 8%; animation: float-slow-1 16s infinite;"></div>
+            <div class="fl-el bg-shape-circle hide-on-mobile" style="width: 10px; height: 10px; background: rgba(165,180,252,0.08); bottom: 40%; left: 15%; animation: float-vertical 14s infinite;"></div>
+            <div class="fl-el bg-shape-plus hide-on-mobile" style="top: 60%; right: 20%; animation: rotate-slow 45s infinite;"></div>
+            <div class="fl-el bg-particle" style="width: 6px; height: 6px; background: rgba(99,102,241,0.1); box-shadow: 0 0 10px rgba(99,102,241,0.15); bottom: 15%; right: 35%; animation: pulse-opacity 5s infinite; --min-opacity:0.05; --max-opacity:0.15;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <span class="badge-pill sec-badge">🔥 Trending Near You</span>
+                <h2 class="sec-h2">Your City. Your Collab.</h2>
+                <div class="sec-line"></div>
+                <p class="sec-sub">Explore live campaigns from local businesses looking for creators just like you.</p>
+            </div>
+
+            <div class="camp-grid">
+                <!-- Card 1 -->
+                <div class="camp-card reveal" data-delay="0">
+                    <div class="camp-img">
+                        <div class="camp-grad cg-1"><svg class="camp-wm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg></div>
+                        <span class="camp-tag-cat">FOOD & CAFE ☕</span>
+                        <span class="camp-tag-trend">🔥 Trending</span>
+                    </div>
+                    <div class="camp-content">
+                        <h4 class="camp-title">Local Café Brand Collab</h4>
+                        <div class="camp-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>Mumbai</span></div>
+                        <div class="camp-bot">
+                            <span class="camp-price">₹15,000</span>
+                            <span class="camp-apply">Apply <span>→</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="camp-card reveal" data-delay="120">
+                    <div class="camp-img">
+                        <div class="camp-grad cg-2"><svg class="camp-wm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+                        <span class="camp-tag-cat">FITNESS 💪</span>
+                    </div>
+                    <div class="camp-content">
+                        <h4 class="camp-title">Fitness Studio Promotion</h4>
+                        <div class="camp-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>Delhi</span></div>
+                        <div class="camp-bot">
+                            <span class="camp-price">₹25,000</span>
+                            <span class="camp-apply">Apply <span>→</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="camp-card reveal" data-delay="240">
+                    <div class="camp-img">
+                        <div class="camp-grad cg-3"><svg class="camp-wm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
+                        <span class="camp-tag-cat">BEAUTY ✨</span>
+                    </div>
+                    <div class="camp-content">
+                        <h4 class="camp-title">Beauty Salon Launch Day</h4>
+                        <div class="camp-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>Bangalore</span></div>
+                        <div class="camp-bot">
+                            <span class="camp-price">₹20,000</span>
+                            <span class="camp-apply">Apply <span>→</span></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="camp-card reveal" data-delay="360">
+                    <div class="camp-img">
+                        <div class="camp-grad cg-4"><svg class="camp-wm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                        <span class="camp-tag-cat">DINING 🍽️</span>
+                        <span class="camp-tag-trend">🔥 Trending</span>
+                    </div>
+                    <div class="camp-content">
+                        <h4 class="camp-title">Restaurant Grand Opening</h4>
+                        <div class="camp-loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>Pune</span></div>
+                        <div class="camp-bot">
+                            <span class="camp-price">₹30,000</span>
+                            <span class="camp-apply">Apply <span>→</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BENTO FEATURES -->
+    <section id="features" class="section-padding bg-white">
+        <div class="bg-elements">
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.04" style="top: 50%; left: 50%; margin-top:-350px; margin-left:-350px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 60%); filter: blur(100px); animation: scale-breathe 20s infinite;"></div>
+            
+            <div class="fl-el bg-shape-ring hide-on-mobile" style="width: 100px; height: 100px; top: 8%; right: 5%; animation: float-slow-2 20s infinite;"></div>
+            <div class="fl-el bg-shape-square-outline" style="width: 28px; height: 28px; bottom: 15%; left: 3%; animation: float-slow-1 18s infinite, rotate-slow 50s infinite;"></div>
+            <div class="fl-el bg-shape-circle hide-on-mobile" style="width: 8px; height: 8px; background: rgba(236,72,153,0.06); top: 45%; left: 2%; animation: pulse-opacity 6s infinite; --min-opacity:0.02; --max-opacity:0.08;"></div>
+            <div class="fl-el bg-particle" style="width: 5px; height: 5px; background: rgba(99,102,241,0.08); box-shadow: 0 0 8px rgba(99,102,241,0.12); bottom: 30%; right: 6%; animation: float-vertical 12s infinite;"></div>
+            
+            <div class="fl-el bg-streak hide-on-mobile" style="width: 1px; height: 300px; background: linear-gradient(to bottom, transparent, rgba(99,102,241,0.03), transparent); top: 0; left: 30%; transform: rotate(25deg); animation: float-slow-2 30s infinite;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <span class="badge-pill" style="margin-bottom:16px;">⚡ Platform Features</span>
+                <h2 class="sec-h2">Built for Creators & Businesses</h2>
+                <div class="sec-line"></div>
+                <p class="sec-sub">Everything you need to run successful local marketing campaigns, on one beautiful platform.</p>
+            </div>
+
+            <div class="bento-grid">
+                <!-- Row 1 -->
+                <div class="bento-card bc-span-2 bc-1 reveal" data-delay="0">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                        <h3 class="bc-title">Hyper-Local Targeting</h3>
+                        <p class="bc-desc">Find creators who influence your exact neighbourhood. Filter by city, area, and niche to discover the perfect match.</p>
+                    </div>
+                    <svg class="bc-deco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                </div>
+                <div class="bento-card bc-border reveal" data-delay="100">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg></div>
+                        <h3 class="bc-title">Real-Time Analytics</h3>
+                        <p class="bc-desc">Track reach, engagement, and conversions with beautiful, real-time dashboards.</p>
+                    </div>
+                </div>
+                <!-- Row 2 -->
+                <div class="bento-card bc-dark reveal" data-delay="0">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v1h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6V4a2 2 0 0 1 2-2z"></path></svg></div>
+                        <h3 class="bc-title">Smart Matching</h3>
+                        <p class="bc-desc">Our algorithm suggests the best creators based on your campaign goals and budget.</p>
+                    </div>
+                </div>
+                <div class="bento-card bc-amber reveal" data-delay="100">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <h3 class="bc-title">In-App Messaging</h3>
+                        <p class="bc-desc">Chat directly with brands or creators. Share briefs, content, and feedback seamlessly.</p>
+                    </div>
+                </div>
+                <div class="bento-card bc-green reveal" data-delay="200">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                        <h3 class="bc-title">Campaign Calendar</h3>
+                        <p class="bc-desc">Plan content, set deadlines, and manage deliverables with smart scheduling.</p>
+                    </div>
+                </div>
+                <!-- Row 3 -->
+                <div class="bento-card bc-pink reveal" data-delay="0">
+                    <div>
+                        <div class="bc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                        <h3 class="bc-title">Secure Payments</h3>
+                        <p class="bc-desc">Escrow-protected transactions. Payments released only after deliverables are approved.</p>
+                    </div>
+                </div>
+                <div class="bento-card bc-span-2 bc-border reveal" data-delay="100">
+                    <div>
+                        <div class="bc-icon" style="background:var(--purple-100); color:var(--purple-500);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"></path><path d="M10 22V6c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v16"></path><path d="M16 22V2c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v20"></path></svg></div>
+                        <h3 class="bc-title">Campaign Management</h3>
+                        <p class="bc-desc">Manage multiple collaborations, track progress, and coordinate with creators — all from one dashboard.</p>
+                    </div>
+                    <svg class="bc-deco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 22h16"></path><path d="M10 22V6c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v16"></path><path d="M16 22V2c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v20"></path></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="section-padding">
+        <div class="bg-elements">
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.05" style="top: -80px; left: -60px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%); filter: blur(50px); animation: float-slow-1 18s infinite;"></div>
+            <div class="fl-el bg-orb hide-orb-mobile js-scroll-parallax" data-speed="-0.03" style="bottom: -60px; right: -60px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%); filter: blur(60px); animation: float-slow-2 22s infinite;"></div>
+            
+            <div class="fl-el bg-shape-ring hide-on-mobile" style="width: 90px; height: 90px; top: 15%; right: 10%; animation: scale-breathe 14s infinite;"></div>
+            <div class="fl-el bg-shape-circle hide-on-mobile" style="width: 12px; height: 12px; background: rgba(165,180,252,0.07); bottom: 25%; left: 8%; animation: float-diagonal 15s infinite;"></div>
+            <div class="fl-el bg-shape-plus hide-on-mobile" style="top: 50%; left: 6%; animation: rotate-slow 55s infinite;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <span class="badge-pill" style="margin-bottom:16px;">🤝 Simple Process</span>
+                <h2 class="sec-h2">How Localyse Works</h2>
+                <div class="sec-line"></div>
+                <p class="sec-sub">From signup to success — it's effortlessly simple.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card reveal" data-delay="0">
+                    <div class="step-icon-area step-connector">
+                        <div class="step-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                        <div class="step-num">1</div>
+                    </div>
+                    <h4 class="step-title">Create Your Profile <span class="animate-wiggle">✍️</span></h4>
+                    <p class="step-desc">Sign up as a creator or business. It takes less than 2 minutes.</p>
+                </div>
+                <div class="step-card reveal" data-delay="150">
+                    <div class="step-icon-area step-connector">
+                        <div class="step-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+                        <div class="step-num">2</div>
+                    </div>
+                    <h4 class="step-title">Discover Opportunities <span class="animate-wiggle">🗺️</span></h4>
+                    <p class="step-desc">Browse campaigns or find creators that match your goals.</p>
+                </div>
+                <div class="step-card reveal" data-delay="300">
+                    <div class="step-icon-area step-connector">
+                        <div class="step-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <div class="step-num">3</div>
+                    </div>
+                    <h4 class="step-title">Connect & Collaborate <span class="animate-wiggle">🤝</span></h4>
+                    <p class="step-desc">Chat, share briefs, and finalize campaign details together.</p>
+                </div>
+                <div class="step-card reveal" data-delay="450">
+                    <div class="step-icon-area">
+                        <div class="step-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                        <div class="step-num">4</div>
+                    </div>
+                    <h4 class="step-title">Track & Grow <span class="animate-wiggle">🚀</span></h4>
+                    <p class="step-desc">Monitor performance, measure ROI, and scale what works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING PLANS -->
+    <section id="pricing" class="section-padding pricing-section">
+        <div class="bg-elements">
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.04" style="top: 10%; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 60%); filter: blur(70px); animation: scale-breathe 22s infinite;"></div>
+            <div class="fl-el bg-shape-ring hide-on-mobile" style="width: 140px; height: 140px; top: 40%; left: -30px; animation: float-slow-1 25s infinite;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <h2 class="sec-h2">Pricing Plans</h2>
+                <p class="sec-sub" style="margin-top: 16px;">Choose the perfect plan for your business needs with transparent pricing and no hidden fees.</p>
+            </div>
+            
+            <div class="pricing-toggle reveal">
+                Yearly (20% off)
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                Monthly
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Free Plan -->
+                <div class="price-card reveal" data-delay="0">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">
+                        <span class="amount">₹0</span><span class="period">/year</span>
+                    </div>
+                    <p class="plan-desc">Perfect for small businesses just getting started with influencer marketing.</p>
+                    <ul class="plan-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> 3 active campaigns</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 5 influencer connections</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Basic analytics</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Email support</li>
+                    </ul>
+                    <button class="btn-outline" style="width: 100%;">Start for free</button>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="price-card featured reveal" data-delay="150">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price">
+                        <span class="old-amount">₹299</span>
+                        <span class="free-text">Free for now</span>
+                        <span class="period">/year</span>
+                    </div>
+                    <p class="plan-desc">Ideal for growing businesses looking to scale their influencer marketing.</p>
+                    <ul class="plan-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited active campaigns</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 50 influencer connections</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Advanced analytics and reporting</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Campaign automation tools</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority email support</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Branded content approval</li>
+                    </ul>
+                    <button class="btn-price-primary">Get started</button>
+                </div>
+
+                <!-- Business Plan -->
+                <div class="price-card reveal" data-delay="300">
+                    <div class="plan-name">Business</div>
+                    <div class="plan-price">
+                        <span class="old-amount">₹999</span>
+                        <span class="free-text">Free for now</span>
+                        <span class="period">/year</span>
+                    </div>
+                    <p class="plan-desc">For established businesses with complex influencer marketing needs.</p>
+                    <ul class="plan-features">
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited active campaigns</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited influencer connections</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom analytics dashboard</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Advanced automation tools</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Dedicated account manager</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> API access</li>
+                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Contract management</li>
+                    </ul>
+                    <button class="btn-price-primary">Contact sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUCCESS STORIES (Feedbacks) -->
+    <section id="feedbacks" class="section-padding bg-white">
+        <div class="bg-elements">
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.02" style="top: 50%; left: 50%; margin-top: -200px; margin-left: -200px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 60%); filter: blur(80px); animation: scale-breathe 20s infinite;"></div>
+            <div class="fl-el bg-particle" style="width: 5px; height: 5px; background: rgba(99,102,241,0.07); top: 20%; left: 10%; animation: pulse-opacity 5s infinite; --min-opacity:0.02; --max-opacity:0.09;"></div>
+            <div class="fl-el bg-particle hide-on-mobile" style="width: 4px; height: 4px; background: rgba(165,180,252,0.08); bottom: 20%; right: 12%; animation: pulse-opacity 6s infinite 3s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <h2 class="sec-h2">Success Stories</h2>
+                <p class="sec-sub" style="margin-top: 16px;">See how businesses and influencers are thriving with Localyse.</p>
+            </div>
+
+            <div class="feedback-grid">
+                <!-- Card 1 -->
+                <div class="fb-card reveal" data-delay="0">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">Localyse has transformed how we approach local marketing. We've seen a 3x ROI on our campaigns with authentic engagement from real customers.</p>
+                    <div class="fb-author">Ravi Kumar</div>
+                    <div class="fb-role">Marketing Director, Urban Cafe Chain</div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="fb-card reveal" data-delay="100">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">As a micro-influencer, Localyse has connected me with local businesses that perfectly align with my values. The platform is intuitive and the campaign management tools save me hours.</p>
+                    <div class="fb-author">Ayush Agarwal</div>
+                    <div class="fb-role">Lifestyle Influencer, @vlogwithayush</div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="fb-card reveal" data-delay="200">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">We were struggling to reach our local audience effectively. Localyse matched us with the perfect neighborhood influencers, and we've seen foot traffic increase by 40%.</p>
+                    <div class="fb-author">Priya Patel</div>
+                    <div class="fb-role">Owner, Bloom Boutique</div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="fb-card reveal" data-delay="300">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">The analytics and reporting features are incredible. I can show my clients exactly how our influencer campaigns are performing and justify every marketing dollar spent.</p>
+                    <div class="fb-author">Shad Husain</div>
+                    <div class="fb-role">Agency Founder, Local Edge Marketing</div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="fb-card reveal" data-delay="400">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">I've tried other platforms, but Localyse's focus on local markets makes all the difference. My content feels authentic, and my followers appreciate the local business recommendations.</p>
+                    <div class="fb-author">Aradhya Singh</div>
+                    <div class="fb-role">Food & Travel Creator, @lifeofthradhya</div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="fb-card reveal" data-delay="500">
+                    <div class="fb-stars">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <p class="fb-quote">The automated campaign management has reduced our marketing overhead by 30%. We're reaching more customers with less effort than ever before.</p>
+                    <div class="fb-author">Sanjay Mehta</div>
+                    <div class="fb-role">CEO, FitZone Gyms</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY GRID -->
+    <section class="section-padding bg-white">
+        <div class="bg-elements">
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.04" style="top: -50px; left: 20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(236,72,153,0.04) 0%, transparent 70%); filter: blur(50px); animation: float-slow-1 16s infinite;"></div>
+            <div class="fl-el bg-orb hide-orb-mobile js-scroll-parallax" data-speed="-0.03" style="bottom: -40px; right: 15%; width: 250px; height: 250px; background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%); filter: blur(60px); animation: float-slow-2 20s infinite;"></div>
+            
+            <!-- Confetti/Particles -->
+            <div class="fl-el bg-particle" style="width: 7px; height: 7px; background: rgba(236,72,153,0.08); top: 15%; left: 10%; animation: pulse-opacity 4s infinite 1s; --min-opacity:0.02; --max-opacity:0.12;"></div>
+            <div class="fl-el bg-particle hide-on-mobile" style="width: 5px; height: 5px; background: rgba(99,102,241,0.1); top: 30%; right: 8%; animation: pulse-opacity 6s infinite 0s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+            <div class="fl-el bg-particle" style="width: 6px; height: 6px; background: rgba(251,191,36,0.08); bottom: 20%; left: 15%; animation: pulse-opacity 5s infinite 2s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+            <div class="fl-el bg-particle hide-on-mobile" style="width: 4px; height: 4px; background: rgba(52,211,153,0.08); bottom: 10%; right: 30%; animation: pulse-opacity 7s infinite 0s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+            <div class="fl-el bg-particle" style="width: 8px; height: 8px; background: rgba(99,102,241,0.06); top: 50%; left: 5%; animation: pulse-opacity 4s infinite 3s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+            <div class="fl-el bg-particle hide-on-mobile" style="width: 5px; height: 5px; background: rgba(236,72,153,0.09); top: 60%; right: 5%; animation: pulse-opacity 5s infinite 1s; --min-opacity:0.02; --max-opacity:0.1;"></div>
+
+            <div class="fl-el hide-on-mobile" style="width: 4px; height: 12px; border-radius: 2px; background: rgba(99,102,241,0.06); top: 10%; right: 25%; transform: rotate(15deg); animation: float-slow-1 20s infinite;"></div>
+            <div class="fl-el hide-on-mobile" style="width: 4px; height: 12px; border-radius: 2px; background: rgba(52,211,153,0.05); bottom: 15%; right: 20%; transform: rotate(-45deg); animation: float-slow-2 18s infinite;"></div>
+            <div class="fl-el hide-on-mobile" style="width: 4px; height: 12px; border-radius: 2px; background: rgba(251,191,36,0.06); top: 25%; left: 25%; transform: rotate(45deg); animation: float-slow-3 22s infinite;"></div>
+            <div class="fl-el hide-on-mobile" style="width: 4px; height: 12px; border-radius: 2px; background: rgba(236,72,153,0.05); bottom: 35%; left: 10%; transform: rotate(-60deg); animation: float-slow-1 25s infinite;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="sec-header reveal">
+                <span class="badge-pill" style="margin-bottom:16px;">💜 Creator Community</span>
+                <h2 class="sec-h2">Join 2,000+ Creators Already on Localyse</h2>
+                <div class="sec-line"></div>
+                <p class="sec-sub">From food bloggers to fitness creators — our community is growing every day.</p>
+            </div>
+
+            <div class="community-grid">
+                <!-- Row 1 -->
+                <div class="com-avatar cg-p reveal" data-delay="0">S</div>
+                <div class="com-avatar ca-sm cg-pi reveal" data-delay="100">A</div>
+                <div class="com-avatar ca-lg cg-a reveal" data-delay="50">R</div>
+                <div class="com-avatar cg-g reveal" data-delay="150">M</div>
+                <div class="com-avatar ca-sm cg-b reveal" data-delay="80">K</div>
+                <div class="com-avatar cg-v reveal" data-delay="200">P</div>
+                <div class="com-avatar ca-lg cg-r reveal" data-delay="120">N</div>
+                <div class="com-avatar cg-c reveal" data-delay="250">J</div>
+                
+                <!-- Row 2 -->
+                <div class="com-avatar ca-lg cg-a reveal" data-delay="90">D</div>
+                <div class="com-avatar cg-v reveal" data-delay="210">V</div>
+                <div class="com-avatar ca-sm cg-p reveal" data-delay="140">T</div>
+                <div class="com-avatar cg-c reveal" data-delay="60">L</div>
+                <div class="com-avatar ca-lg cg-pi reveal" data-delay="180">H</div>
+                <div class="com-avatar cg-g reveal" data-delay="240">Z</div>
+                <div class="com-avatar ca-sm cg-r reveal" data-delay="110">E</div>
+                <div class="com-avatar cg-b reveal" data-delay="280">W</div>
+
+                <!-- Row 3 -->
+                <div class="com-avatar cg-g reveal" data-delay="130">Q</div>
+                <div class="com-avatar ca-lg cg-p reveal" data-delay="220">C</div>
+                <div class="com-avatar ca-sm cg-a reveal" data-delay="70">Y</div>
+                <div class="com-avatar cg-r reveal" data-delay="190">U</div>
+                <div class="com-avatar ca-lg cg-c reveal" data-delay="260">F</div>
+                <div class="com-avatar cg-pi reveal" data-delay="160">I</div>
+                <div class="com-avatar ca-sm cg-v reveal" data-delay="300">O</div>
+                <div class="com-avatar cg-b reveal" data-delay="230">B</div>
+            </div>
+
+            <div class="btn-center reveal" data-delay="300">
+                <button class="btn-primary animate-glow">Join the Community 🎉</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+        <div class="cta-top-fade"></div>
+        <div class="bg-elements">
+            <div class="bg-dot-grid-light"></div>
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.04" style="top: -20%; right: -15%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%); filter: blur(70px); animation: float-slow-1 18s infinite;"></div>
+            <div class="fl-el bg-orb hide-orb-mobile js-scroll-parallax" data-speed="-0.03" style="bottom: -25%; left: -10%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%); filter: blur(80px); animation: float-slow-2 22s infinite;"></div>
+            
+            <div class="fl-el bg-shape-circle-light hide-on-mobile" style="width: 15px; height: 15px; top: 20%; left: 10%; animation: float-slow-2 14s infinite;"></div>
+            <div class="fl-el bg-shape-ring-light hide-on-mobile" style="width: 70px; height: 70px; bottom: 15%; right: 8%; animation: rotate-slow 40s infinite;"></div>
+            <div class="fl-el bg-shape-square-light" style="width: 22px; height: 22px; top: 60%; left: 5%; animation: float-diagonal 16s infinite;"></div>
+            <div class="fl-el bg-shape-circle-light" style="width: 8px; height: 8px; box-shadow: 0 0 12px rgba(255,255,255,0.15); top: 30%; right: 20%; animation: pulse-opacity 4s infinite; --min-opacity: 0.05; --max-opacity: 0.15;"></div>
+            <div class="fl-el bg-shape-plus-light hide-on-mobile" style="bottom: 35%; left: 25%; animation: rotate-slow 50s infinite;"></div>
+        </div>
+        
+        <div class="container reveal content-z">
+            <div class="emoji-row">
+                <span class="animate-wiggle" style="animation-delay: 0.1s">✨</span>
+                <span class="animate-wiggle" style="animation-delay: 0.2s">🚀</span>
+                <span class="animate-wiggle" style="animation-delay: 0.3s">💜</span>
+                <span class="animate-wiggle" style="animation-delay: 0.4s">⚡</span>
+                <span class="animate-wiggle" style="animation-delay: 0.5s">🎯</span>
+            </div>
+            <h2 class="cta-h2">Ready to Go Local?</h2>
+            <p class="cta-sub">Join thousands of creators and businesses already growing with Localyse.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-primary animate-glow" style="background: white; color: var(--purple-600); font-size: 17px; padding: 18px 36px;">
+                    Get Started Free <span class="animate-wiggle">🚀</span>
+                </button>
+                <button class="btn-ghost" style="padding: 18px 36px;">
+                    Talk to Our Team
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top-line"></div>
+        <div class="bg-elements">
+            <div class="bg-dot-grid" style="background-image: radial-gradient(circle, rgba(99,102,241,0.02) 1px, transparent 1px);"></div>
+            <div class="fl-el bg-orb js-scroll-parallax" data-speed="0.03" style="top: -50px; right: 20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%); filter: blur(60px); animation: float-slow-1 20s infinite;"></div>
+            
+            <div class="fl-el bg-shape-ring hide-on-mobile" style="width: 80px; height: 80px; top: 30%; left: 5%; animation: rotate-slow 60s infinite;"></div>
+            <div class="fl-el bg-particle" style="width: 6px; height: 6px; background: rgba(99,102,241,0.08); top: 50%; right: 10%; animation: pulse-opacity 5s infinite; --min-opacity: 0.02; --max-opacity: 0.1;"></div>
+            <div class="fl-el bg-shape-square hide-on-mobile" style="width: 16px; height: 16px; bottom: 40%; left: 15%; animation: float-slow-2 18s infinite;"></div>
+        </div>
+
+        <div class="container content-z">
+            <div class="footer-grid">
+                <!-- Col 1 -->
+                <div>
+                    <a href="#hero" class="nav-logo">
+                        <div class="nav-logo-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
+                            </svg>
+                        </div>
+                        <span class="nav-brand" style="color: white;">Localyse</span>
+                    </a>
+                    <p class="footer-desc">Connecting local creators with local businesses for authentic, community-driven marketing campaigns. 💜</p>
+                    <div class="socials">
+                        <div class="social-btn">Tw</div>
+                        <div class="social-btn">In</div>
+                        <div class="social-btn">Li</div>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <div class="footer-h4">Quick Links</div>
+                    <div class="footer-links">
+                        <a href="#hero">Home</a>
+                        <a href="#features">Features</a>
+                        <a href="#how-it-works">About</a>
+                        <a href="#pricing">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <div class="footer-h4">For Businesses</div>
+                    <div class="footer-links">
+                        <a href="#">Post Campaign</a>
+                        <a href="#">Find Creators</a>
+                        <a href="#">Analytics</a>
+                        <a href="#">Pricing</a>
+                    </div>
+                </div>
+
+                <!-- Col 4 -->
+                <div>
+                    <div class="footer-h4">For Creators</div>
+                    <div class="footer-links">
+                        <a href="#">Discover Campaigns</a>
+                        <a href="#">Creator Dashboard</a>
+                        <a href="#">Resources</a>
+                        <a href="#">Community</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>© 2024 Localyse. Made with 💜 for creators.</div>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Scroll Reveal Observer
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOptions = { root: null, rootMargin: "0px 0px -40px 0px", threshold: 0.12 };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const delay = el.getAttribute('data-delay');
+                        if (delay) el.style.transitionDelay = `${delay}ms`;
+                        el.classList.add('active');
+                        observer.unobserve(el);
+                    }
+                });
+            }, revealOptions);
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // 2. Navbar Scroll Behavior
+            const navbar = document.getElementById('navbar');
+            let isScrolling = false;
+            window.addEventListener('scroll', () => {
+                if (!isScrolling) {
+                    window.requestAnimationFrame(() => {
+                        if (window.scrollY > 80) navbar.classList.add('scrolled');
+                        else navbar.classList.remove('scrolled');
+                        isScrolling = false;
+                    });
+                    isScrolling = true;
+                }
+            }, { passive: true });
+
+            // 3. Mobile Menu Toggle
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            
+            const toggleMenu = () => {
+                hamburger.classList.toggle('active');
+                mobileMenu.classList.toggle('open');
+                document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+            };
+            
+            hamburger.addEventListener('click', toggleMenu);
+            mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+            // 4. Animated Counters
+            const statNumbers = document.querySelectorAll('.stat-num');
+            let animated = false;
+            
+            const animateValue = (obj, start, end, duration) => {
+                let startTimestamp = null;
+                const suffix = obj.getAttribute('data-suf') || '';
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 4);
+                    
+                    let current = (easeOut * (end - start) + start);
+                    if (end % 1 !== 0) obj.innerHTML = current.toFixed(1) + suffix;
+                    else obj.innerHTML = Math.floor(current) + suffix;
+                    
+                    if (progress < 1) window.requestAnimationFrame(step);
+                    else obj.innerHTML = end + suffix; // Ensure final exact value
+                };
+                window.requestAnimationFrame(step);
+            };
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !animated) {
+                    animated = true;
+                    statNumbers.forEach(stat => {
+                        const target = parseFloat(stat.getAttribute('data-val'));
+                        animateValue(stat, 0, target, 2500);
+                    });
+                }
+            }, { threshold: 0.5 });
+            
+            const trustSection = document.querySelector('.trust-strip');
+            if (trustSection) statsObserver.observe(trustSection);
+
+            // 5. Active Nav Link on Scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }, { passive: true });
+
+            // 6. Smooth Scroll with offset
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: targetEl.offsetTop - 72,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // 7. Parallax Effects (Mouse and Scroll)
+            const heroSection = document.getElementById('hero');
+            const mouseParallaxOrbs = document.querySelectorAll('.hero .js-parallax');
+            
+            // Mouse Parallax (Hero only, Desktop only)
+            if (heroSection && window.innerWidth > 1024) {
+                heroSection.addEventListener('mousemove', (e) => {
+                    window.requestAnimationFrame(() => {
+                        const rect = heroSection.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const percentX = (x - centerX) / centerX;
+                        const percentY = (y - centerY) / centerY;
+
+                        mouseParallaxOrbs.forEach(orb => {
+                            const speed = parseFloat(orb.getAttribute('data-speed')) || 0.02;
+                            const moveX = percentX * (rect.width * speed);
+                            const moveY = percentY * (rect.height * speed);
+                            orb.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+                        });
+                    });
+                });
+            }
+
+            // Scroll Parallax (Other sections)
+            const scrollOrbs = document.querySelectorAll('.js-scroll-parallax');
+            let scrollParallaxTicking = false;
+            
+            window.addEventListener('scroll', () => {
+                if (!scrollParallaxTicking) {
+                    window.requestAnimationFrame(() => {
+                        scrollOrbs.forEach(orb => {
+                            const speed = parseFloat(orb.getAttribute('data-speed')) || 0.05;
+                            const parent = orb.closest('section') || orb.closest('footer');
+                            if(parent) {
+                                const rect = parent.getBoundingClientRect();
+                                // Only process if section is in viewport
+                                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                                    // Calculate offset relative to when element enters screen
+                                    const offset = rect.top * speed * -1;
+                                    orb.style.transform = `translate3d(0, ${offset}px, 0)`;
+                                }
+                            }
+                        });
+                        scrollParallaxTicking = false;
+                    });
+                    scrollParallaxTicking = true;
+                }
+            }, { passive: true });
+
+            // Trigger initial scroll checks
+            if (window.scrollY > 80) navbar.classList.add('scrolled');
+        });
+    </script>
+</body>
 </html>
