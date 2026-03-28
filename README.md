@@ -13,19 +13,12 @@ The project features a modern UI/UX design with smooth scroll animations, a cust
 ✨ Key Features
 
 Modern Animations: Fluid page load transitions, scroll reveals, and custom hover states.
-
 Custom Cursor: Smooth, lerp-based custom cursor with contextual growth on interactive elements.
-
 Bento Grid Layout: A trendy, responsive bento grid showcasing platform features.
-
 Dynamic Counters: Number counters that animate when scrolled into view.
-
 Interactive Components: Custom-built tabs (Business vs. Influencer workflows) and accordion menus.
-
 Horizontal Snap Scrolling: Smooth, touch-friendly horizontal scrolling for use-case cards.
-
 Fully Responsive: Flawless layout adaptation across desktop, tablet, and mobile devices with a custom hamburger menu.
-
 Scroll Progress Indicator: A dynamic progress bar fixed to the top of the viewport.
 
 🛠️ Tech Stack
@@ -33,13 +26,9 @@ Scroll Progress Indicator: A dynamic progress bar fixed to the top of the viewpo
 This project is built using vanilla web technologies. No external libraries or frameworks (like React, Vue, or Bootstrap) were used for the core functionality, ensuring maximum performance and zero dependencies.
 
 Markup: HTML5
-
 Styling: CSS3 (Custom Variables, Flexbox, CSS Grid, Media Queries, Keyframe Animations)
-
 Logic & Interactivity: Vanilla JavaScript (ES6+, Intersection Observer API, DOM Manipulation)
-
 Typography: Google Fonts (Inter & Plus Jakarta Sans)
-
 Icons: Inline SVGs
 
 📁 Project Structure
@@ -53,63 +42,31 @@ localyse/
 
 🚀 Getting Started
 
-To get a local copy up and running, follow these simple steps.
+Installation & Cloning :
 
-Prerequisites
-
-You don't need any special build tools (like Node.js or npm) to run this project. All you need is a modern web browser (Chrome, Firefox, Safari, Edge).
-
-Installation & Cloning
-
-Clone the repository
+Clone the repository - 
 
 git clone [https://github.com/your-username/localyse.git](https://github.com/your-username/localyse.git)
 
-
-Navigate to the project directory
-
+Navigate to the project directory :
 cd localyse
 
 
 Run the project
 Since this is a static website, you can simply open the index.html file directly in your browser:
-
 Double-click index.html in your file explorer.
-
 Or, if you are using VS Code, install the Live Server extension, right-click index.html, and select "Open with Live Server".
 
-💻 Usage
-
-This codebase serves as an excellent starting point for a SaaS landing page, an agency website, or a startup portfolio.
-
-To customize it for your own use:
-
-Open style.css to modify the :root color variables (like --primary, --bg-dark, etc.) to match your brand.
-
-Replace the SVG icons in index.html with your own.
-
-Update the text, pricing, and testimonial sections in the HTML as needed.
-
-🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
-
-Fork the Project
+Fork the Project :
 
 Create your Feature Branch (git checkout -b feature/AmazingFeature)
-
 Commit your Changes (git commit -m 'Add some AmazingFeature')
-
 Push to the Branch (git push origin feature/AmazingFeature)
-
-Open a Pull Request
 
 📄 License
 
 Distributed under the MIT License. See LICENSE for more information.
 
-Contact
-
+Contact :
 Your Name - localyse@info.in
-
 Project Link: [https://github.com/your-username/localyse](https://github.com/omm-0/Localyse-Website)
